@@ -29,6 +29,27 @@ def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
     the function returns `None`.
     '''
 
+def _adjacent(word1, word2):
+    '''
+    Returns True if the input words differ by only a single character;
+    returns False otherwise.
+
+    >>> _adjacent('phone','phony')
+    True
+    >>> _adjacent('stone','money')
+    False
+    '''
+    
+    if len(word1) == len(word2):
+        difference = 0
+        for i in range(len(word1)):
+            if word1[i] != word2[i]:
+                difference +=1
+        if difference <= 1:
+            return True
+        else:
+            return False
+
 
 def verify_word_ladder(ladder):
     '''
@@ -41,14 +62,14 @@ def verify_word_ladder(ladder):
     False
     '''
 
-
-def _adjacent(word1, word2):
-    '''
-    Returns True if the input words differ by only a single character;
-    returns False otherwise.
-
-    >>> _adjacent('phone','phony')
-    True
-    >>> _adjacent('stone','money')
-    False
-    '''
+    verify = 0
+    if not ladder:
+        verify = False
+    if len(ladder) == 1:
+        verify = True
+    for i in range(len(ladder)-1):
+        if not _adjacent(ladder[i], ladder[i+1]):
+            return False
+        else:
+            verify = True
+    return verify
