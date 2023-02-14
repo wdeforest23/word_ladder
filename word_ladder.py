@@ -1,5 +1,8 @@
 #!/bin/python3
 
+from collections import deque
+import copy
+
 
 def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
     '''
@@ -16,18 +19,43 @@ def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
     ```
     may give the output
     ```
-    ['stone', 'shone', 'phone', 'phony', 'peony', 'penny', 'benny', 'bonny', 'boney', 'money']
+    ['stone', 'shone', 'phone', 'phony', 'peony', 'penny', 'benny',
+    'bonny', 'boney', 'money']
     ```
     but the possible outputs are not unique,
     so you may also get the output
     ```
-    ['stone', 'shone', 'shote', 'shots', 'soots', 'hoots', 'hooty', 'hooey', 'honey', 'money']
+    ['stone', 'shone', 'shote', 'shots', 'soots', 'hoots', 'hooty',
+    'hooey', 'honey', 'money']
     ```
     (We cannot use doctests here because the outputs are not unique.)
 
     Whenever it is impossible to generate a word ladder between the two words,
     the function returns `None`.
     '''
+
+    dictionary_file = open(dictionary_file)
+    text = dictionary_file.read().split('\n')
+    stack = []
+    q = deque()
+    stack.append(start_word)
+    q.append(stack)
+
+    if start_word == end_word:
+        return stack
+    while len(q) != 0:
+        stack = q.popleft()
+        for w in list(text):
+            if _adjacent(w, stack[-1]):
+                if w == end_word:
+                    stack.append(w)
+                    return stack
+                stack2 = copy.copy(stack)
+                stack2.append(w)
+                q.append(stack2)
+                text.remove(w)
+    return None
+
 
 def _adjacent(word1, word2):
     '''
@@ -39,12 +67,12 @@ def _adjacent(word1, word2):
     >>> _adjacent('stone','money')
     False
     '''
-    
+
     if len(word1) == len(word2):
         difference = 0
         for i in range(len(word1)):
             if word1[i] != word2[i]:
-                difference +=1
+                difference += 1
         if difference <= 1:
             return True
         else:
